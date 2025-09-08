@@ -23,6 +23,7 @@ let ws = null;
 let peers = {};   // key: socketId, value: RTCPeerConnection
 let localStream = null;
 let role = "viewer";
+let userId = null; // User ID assigned by server
 let socket = null; // Socket.IO connection for chat
 let currentZoom = 1; // Zoom level for video
 let isStreamActive = false;
@@ -106,10 +107,20 @@ function setupWebSocket(room){
   ws.onmessage = async evt => {
     const msg = JSON.parse(evt.data);
 
-    if(msg.type === "new-peer" && role === "broadcaster"){
+    if(msg.type === "role-confirmed"){
+      // Server confirmed our role assignment
+      userId = msg.userId;
+      role = msg.role;
+      log(`Role confirmed: ${role} (User ID: ${userId})`);
+      
+      // Update UI to show current role
+      updateRoleDisplay();
+    }
+    else if(msg.type === "new-peer" && role === "broadcaster"){
       // Broadcaster creates a new peer connection for each viewer
       const id = msg.id;
       peers[id] = createPeer(id, true);
+      log(`New viewer joined: ${msg.userId || id}`);
     }
     else if(msg.type === "offer" && role === "viewer"){
       const pc = createPeer(msg.from, false);
@@ -163,6 +174,14 @@ joinBtn.onclick = async ()=>{
   setupWebSocket(room);
   setupChat();
 };
+
+// Function to update role display in UI
+function updateRoleDisplay() {
+  const statusElement = document.getElementById('status');
+  if (statusElement && userId) {
+    statusElement.textContent = `Connected as ${role} (ID: ${userId})`;
+  }
+}
 
 // Chat functionality
 function setupChat() {
