@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Darshan - Live Streaming API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .api-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+        .endpoint {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .get { background: #4CAF50; }
+        .post { background: #2196F3; }
+        .put { background: #FF9800; }
+        .delete { background: #f44336; }
+        .test-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #45a049;
+        }
+        .response {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🕉️ Live Darshan - Live Streaming API</h1>
+        
+        <div class="api-section">
+            <h2>Health Check</h2>
+            <div class="endpoint">
+                <span class="method get">GET</span> /api/health
+            </div>
+            <button class="test-button" onclick="testEndpoint('/api/health', 'GET')">Test Health</button>
+        </div>
+
+        <div class="api-section">
+            <h2>Stream Status</h2>
+            <div class="endpoint">
+                <span class="method get">GET</span> /api/status?room=demo
+            </div>
+            <button class="test-button" onclick="testEndpoint('/api/status?room=demo', 'GET')">Test Status</button>
+        </div>
+
+        <div class="api-section">
+            <h2>All Rooms</h2>
+            <div class="endpoint">
+                <span class="method get">GET</span> /api/rooms
+            </div>
+            <button class="test-button" onclick="testEndpoint('/api/rooms', 'GET')">Test Rooms</button>
+        </div>
+
+        <div class="api-section">
+            <h2>Start Live Stream</h2>
+            <div class="endpoint">
+                <span class="method post">POST</span> /api/start-live
+            </div>
+            <button class="test-button" onclick="testEndpoint('/api/start-live', 'POST', {room: 'demo'})">Start Stream</button>
+        </div>
+
+        <div class="api-section">
+            <h2>Stop Live Stream</h2>
+            <div class="endpoint">
+                <span class="method post">POST</span> /api/stop-live
+            </div>
+            <button class="test-button" onclick="testEndpoint('/api/stop-live', 'POST', {room: 'demo'})">Stop Stream</button>
+        </div>
+
+        <div class="api-section">
+            <h2>Role Management</h2>
+            <div class="endpoint">
+                <span class="method post">POST</span> /api/assign-role
+            </div>
+            <button class="test-button" onclick="testEndpoint('/api/assign-role', 'POST', {userId: 'user123', role: 'broadcaster', room: 'demo'})">Assign Role</button>
+            
+            <div class="endpoint">
+                <span class="method get">GET</span> /api/users
+            </div>
+            <button class="test-button" onclick="testEndpoint('/api/users', 'GET')">Get All Users</button>
+        </div>
+
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function testEndpoint(url, method, body = null) {
+            const responseDiv = document.getElementById('response');
+            responseDiv.style.display = 'block';
+            responseDiv.textContent = 'Testing...';
+            
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                };
+                
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+                
+                const response = await fetch(url, options);
+                const data = await response.json();
+                
+                responseDiv.textContent = `Status: ${response.status}\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

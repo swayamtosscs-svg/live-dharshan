@@ -1,18 +1,24 @@
 {
   "name": "live-streaming",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Live streaming application with WebRTC and API endpoints",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "echo 'No build step required'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["live-streaming", "webrtc", "api", "vercel"],
+  "author": "swayamtosscs-svg",
   "license": "ISC",
   "dependencies": {
     "express": "^5.1.0",
     "mediasoup": "^3.19.1",
     "socket.io": "^4.8.1",
     "ws": "^8.18.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
